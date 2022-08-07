@@ -1,15 +1,15 @@
 "url","unfurled"
-"https://twitter.com/0xDroogy/status/1555727945834156032","[1] https://twitter.com/0xDroogy/status/1555727945834156032
+"https://twitter.com/0xDroogy/status/1551624816108658688","[1] https://twitter.com/0xDroogy/status/1551624816108658688
  ├─(u)─[2] Scheme: https
  ├─(u)─[3] twitter.com
  |  ├─(u)─[5] Domain Name: twitter.com
  |  |  └─(u)─[10] Domain is extremely popular (found in ""Top 1000"" lists)
  |  └─(u)─[6] TLD: com
- └─(u)─[4] /0xDroogy/status/1555727945834156032
+ └─(u)─[4] /0xDroogy/status/1551624816108658688
     ├─(u)─[7] 1: 0xDroogy
     ├─(u)─[8] 2: status
-    └─(u)─[9] 3: 1555727945834156032
-       ├─(❄)─[11] Timestamp: 1659749420971
-       |  └─(🕓)─[14] 2022-08-06 01:30:20.971
-       ├─(❄)─[12] Machine ID: 381
+    └─(u)─[9] 3: 1551624816108658688
+       ├─(❄)─[11] Timestamp: 1658771158612
+       |  └─(🕓)─[14] 2022-07-25 17:45:58.612
+       ├─(❄)─[12] Machine ID: 358
        └─(❄)─[13] Sequence: 0"
