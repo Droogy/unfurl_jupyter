@@ -21,9 +21,6 @@ import networkx
 import queue
 import re
 import unfurl.parsers
-from flask import Flask, render_template, request, redirect, url_for
-from flask_cors import CORS
-from flask_restx import Api, Namespace, Resource
 from pymispwarninglists import WarningLists
 from unfurl import utils
 from urllib.parse import unquote
@@ -477,82 +474,3 @@ class Unfurl:
             text_output += children_text_output
 
         return text_output
-
-
-unfurl_app_host = None
-unfurl_app_port = None
-unfurl_remote_lookups = None
-app = Flask(__name__)
-CORS(app)
-
-
-class UnfurlApp:
-    def __init__(self, unfurl_debug='True', unfurl_host='localhost', unfurl_port='5000', remote_lookups=False):
-        self.unfurl_debug = unfurl_debug
-        self.unfurl_host = unfurl_host
-        self.unfurl_port = unfurl_port
-        self.remote_lookups = remote_lookups
-
-        global unfurl_app_host
-        global unfurl_app_port
-        global unfurl_remote_lookups
-        unfurl_app_host = self.unfurl_host
-        unfurl_app_port = self.unfurl_port
-        unfurl_remote_lookups = self.remote_lookups
-
-        app.config['remote_lookups'] = remote_lookups
-        app.run(debug=unfurl_debug, host=unfurl_host, port=unfurl_port)
-
-
-@app.route('/')
-@app.route('/<path:path>')
-def index(path=''):
-    url_to_unfurl = ''
-    if path:
-        # backward compatibility, it is preferable to use the graph route and a quoted URL instead
-        if f':{unfurl_app_port}/' in request.url:
-            url_to_unfurl = unquote(request.url.split(f':{unfurl_app_port}/', 1)[1])
-        else:
-            # for tests, the port isn't in the URL, take everything after the domain
-            url_to_unfurl = unquote(request.url.split('/', 3)[-1])
-        return redirect(url_for('graph', url=url_to_unfurl))
-    return render_template('graph.html',
-                           unfurl_host=unfurl_app_host,
-                           unfurl_port=unfurl_app_port)
-
-
-@app.route('/graph')
-def graph():
-    if 'url' not in request.args:
-        return redirect(url_for('index'))
-    return render_template('graph.html',
-                           unfurl_host=unfurl_app_host,
-                           unfurl_port=unfurl_app_port)
-
-
-restx_api = Api(app, title='unfurl API',
-                description='API to submit URLs to expand to an unfurl instance.',
-                doc='/doc/')
-
-namespace = Namespace('GenericAPI', description='Generic unfurl API', path='/')
-
-restx_api.add_namespace(namespace)
-
-
-@namespace.route('/json/visjs')
-@namespace.doc(description='Expand a URL and returns the JSON expansion in the vis.js format')
-class JsonVisJS(Resource):
-
-    @namespace.param('url', 'The URL to expand', required=False)
-    def get(self):
-        if 'url' not in request.args:
-            return {}
-        unfurl_this = unquote(request.args['url'])
-        unfurl_instance = Unfurl(remote_lookups=app.config['remote_lookups'])
-        unfurl_instance.add_to_queue(
-            data_type='url', key=None,
-            extra_options={'widthConstraint': {'maximum': 1200}},
-            value=unfurl_this)
-        unfurl_instance.parse_queue()
-        unfurl_json = unfurl_instance.generate_json()
-        return unfurl_json
