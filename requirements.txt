@@ -1,6 +1,3 @@
-flask
-flask-restx
-flask_cors
 maclookup
 networkx
 protobuf == 3.*

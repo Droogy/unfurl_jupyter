@@ -1,6 +1,0 @@
-recursive-include unfurl *
-recursive-exclude unfurl/tests *
-include unfurl_app.py
-include unfurl_cli.py
-include README.md
-include LICENSE
